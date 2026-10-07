@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script>
+!(function(j,a,g){j.__itrace_conf = {bid: 'f43basl8-6nqu7l3w',rel: '0.0.1', spa: true, uid: '', plugins:['jserror','interface','perf','resource','flow','blank']};var b = a.createElement("script");var d = a.getElementsByTagName("script")[0];b.type = "text/javascript";b.crossorigin = true;b.async = true;b.onload = function(){j.__itrace && j.__itrace.setReady()};d.parentNode.insertBefore(b,d);b.src = g})(window, document, "https://g.alicdn.com/woodpeckerx/itrace-next/itrace.iife.js")
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>66QN · 管理后台</title>
+    <style>
+    :root {
+        --c-bg: #f5f5f7;
+        --c-surface: #ffffff;
+        --c-surface-alt: #f0f0f3;
+        --c-sidebar: #1d1d1f;
+        --c-sidebar-hover: #2c2c2e;
+        --c-sidebar-active: #3a3a3c;
+        --c-text: #1d1d1f;
+        --c-text-2: #6e6e73;
+        --c-text-3: #86868b;
+        --c-text-inv: #f5f5f7;
+        --c-accent: #0071e3;
+        --c-accent-h: #0077ed;
+        --c-accent-light: rgba(0,113,227,.08);
+        --c-success: #34c759;
+        --c-warning: #ff9f0a;
+        --c-error: #ff3b30;
+        --c-border: #d2d2d7;
+        --c-border-l: #e5e5ea;
+        --r-s: 8px; --r-m: 12px; --r-l: 16px;
+        --sh-s: 0 1px 3px rgba(0,0,0,.04);
+        --sh-m: 0 4px 12px rgba(0,0,0,.06);
+        --sh-l: 0 8px 24px rgba(0,0,0,.08);
+        --ease: cubic-bezier(.25,.1,.25,1);
+        --dur: .2s;
+        --font: -apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue','PingFang SC',sans-serif;
+        --mono: 'SF Mono','Fira Code','Cascadia Code',monospace;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{font-size:16px;-webkit-text-size-adjust:100%}
+    body{font-family:var(--font);background:var(--c-bg);color:var(--c-text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+    a{color:var(--c-accent);text-decoration:none}
+    button{font-family:var(--font);cursor:pointer;border:none;background:none;font-size:inherit}
+    input,textarea,select{font-family:var(--font);font-size:14px;border:none;outline:none;background:none}
+    ul,ol{list-style:none}
+
+    /* ========================================
+     * SECTION: css-icons
+     * ======================================== */
+    .icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex-shrink:0}
+    .icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+    /* ========================================
+     * SECTION: css-login
+     * Admin login gate
+     * ======================================== */
+    .login-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .login-card{background:var(--c-surface);border-radius:var(--r-l);padding:40px;width:100%;max-width:380px;box-shadow:var(--sh-l);animation:fadeUp .4s var(--ease)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .login-card h1{font-size:1.3rem;font-weight:600;margin-bottom:4px;text-align:center}
+    .login-card p{font-size:.85rem;color:var(--c-text-2);text-align:center;margin-bottom:28px}
+    .login-brand{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;color:var(--c-accent)}
+    .login-brand svg{width:28px;height:28px}
+
+    /* ========================================
+     * SECTION: css-layout
+     * Admin layout: sidebar + content
+     * ======================================== */
+    .admin-layout{display:flex;min-height:100vh}
+    .sidebar{width:220px;background:var(--c-sidebar);color:var(--c-text-inv);padding:20px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s var(--ease)}
+    .sidebar-brand{padding:0 20px;margin-bottom:28px;display:flex;align-items:center;gap:10px}
+    .sidebar-brand svg{width:22px;height:22px;color:var(--c-accent)}
+    .sidebar-brand span{font-size:1rem;font-weight:600;letter-spacing:.5px}
+    .sidebar-brand small{font-size:.7rem;color:var(--c-text-3);font-weight:400;margin-left:2px}
+    .sidebar-nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 8px}
+    .sidebar-nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-s);font-size:.85rem;font-weight:500;color:rgba(245,245,247,.6);transition:all .2s var(--ease);cursor:pointer}
+    .sidebar-nav-item:hover{color:rgba(245,245,247,.9);background:var(--c-sidebar-hover)}
+    .sidebar-nav-item.active{color:#fff;background:var(--c-sidebar-active)}
+    .sidebar-nav-item .icon{width:18px;height:18px;opacity:.7}
+    .sidebar-nav-item.active .icon{opacity:1}
+    .sidebar-section{font-size:.7rem;text-transform:uppercase;letter-spacing:1.2px;color:rgba(245,245,247,.3);padding:16px 12px 6px;font-weight:600}
+    .sidebar-foot{padding:12px 20px;border-top:1px solid rgba(255,255,255,.08)}
+    .sidebar-user{display:flex;align-items:center;gap:10px;font-size:.82rem}
+    .sidebar-avatar{width:32px;height:32px;border-radius:50%;background:var(--c-accent);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff}
+    .main-content{margin-left:220px;flex:1;padding:24px 32px;min-height:100vh}
+
+    /* ========================================
+     * SECTION: css-header
+     * Content area header
+     * ======================================== */
+    .content-header{margin-bottom:24px}
+    .content-header h1{font-size:1.5rem;font-weight:600;margin-bottom:4px}
+    .content-header p{font-size:.85rem;color:var(--c-text-2)}
+
+    /* ========================================
+     * SECTION: css-stats
+     * Dashboard stat cards
+     * ======================================== */
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+    .stat-card{background:var(--c-surface);border:1px solid var(--c-border-l);border-radius:var(--r-m);padding:20px;transition:box-shadow .25s var(--ease);animation:fadeUp .4s var(--ease) both}
+    .stat-card:nth-child(2){animation-delay:.05s}
+    .stat-card:nth-child(3){animation-delay:.1s}
+    .stat-card:nth-child(4){animation-delay:.15s}
+    .stat-card:hover{box-shadow:var(--sh-m)}
+    .stat-label{font-size:.75rem;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:6px}
+    .stat-num{font-size:1.8rem;font-weight:700;color:var(--c-text)}
+    .stat-num.accent{color:var(--c-accent)}
+    .stat-sub{font-size:.75rem;color:var(--c-text-3);margin-top:2px;display:flex;align-items:center;gap:4px}
+
+    /* ========================================
+     * SECTION: css-panels
+     * Admin panels (tab content)
+     * ======================================== */
+    .panel{display:none;animation:panelIn .3s var(--ease)}
+    .panel.active{display:block}
+    @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ========================================
+     * SECTION: css-forms
+     * ======================================== */
+    .form-card{background:var(--c-surface);border:1px solid var(--c-border-l);border-radius:var(--r-l);padding:28px;margin-bottom:20px}
+    .form-card-title{font-size:1rem;font-weight:600;margin-bottom:4px}
+    .form-card-desc{font-size:.8rem;color:var(--c-text-2);margin-bottom:20px;line-height:1.6}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .field{margin-bottom:18px}
+    .field-label{display:block;font-size:.8rem;font-weight:500;color:var(--c-text);margin-bottom:5px}
+    .field-input{display:block;width:100%;padding:9px 12px;border:1px solid var(--c-border);border-radius:var(--r-s);font-size:14px;color:var(--c-text);background:var(--c-surface);transition:border-color .2s,box-shadow .2s}
+    .field-input:focus{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(0,113,227,.1)}
+    .field-input::placeholder{color:var(--c-text-3)}
+    .field-textarea{resize:vertical;min-height:80px;line-height:1.5;font-family:var(--mono);font-size:13px}
+    .field-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2386868b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+    .field-hint{display:block;font-size:.72rem;color:var(--c-text-3);margin-top:3px}
+    .field-secret{display:flex;gap:6px;align-items:center}
+    .field-secret .field-input{flex:1}
+    .field-range{display:flex;align-items:center;gap:12px}
+    .field-range input[type="range"]{flex:1;accent-color:var(--c-accent);height:4px}
+    .field-range span{font-size:.8rem;font-weight:600;color:var(--c-accent);min-width:36px;text-align:right}
+    .field-group{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+    /* ========================================
+     * SECTION: css-buttons
+     * ======================================== */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:var(--r-s);font-size:.82rem;font-weight:500;transition:all .2s var(--ease);cursor:pointer;min-height:36px;border:none}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--c-accent);color:#fff}.btn-primary:hover{background:var(--c-accent-h);color:#fff}
+    .btn-secondary{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border)}.btn-secondary:hover{background:var(--c-surface-alt)}
+    .btn-success{background:var(--c-success);color:#fff}.btn-success:hover{filter:brightness(1.08);color:#fff}
+    .btn-danger{background:var(--c-error);color:#fff}.btn-danger:hover{filter:brightness(1.08);color:#fff}
+    .btn-sm{padding:5px 12px;font-size:.78rem;min-height:28px}
+    .btn-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-s);transition:background .2s}
+    .btn-icon:hover{background:var(--c-surface-alt)}
+
+    /* ========================================
+     * SECTION: css-table
+     * Data table / list styles
+     * ======================================== */
+    .data-table{width:100%;border-collapse:separate;border-spacing:0}
+    .data-table th{text-align:left;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--c-text-3);padding:8px 12px;border-bottom:1px solid var(--c-border-l)}
+    .data-table td{padding:12px;font-size:.85rem;border-bottom:1px solid var(--c-border-l);vertical-align:middle}
+    .data-table tr{transition:background .15s}
+    .data-table tbody tr:hover{background:var(--c-surface-alt)}
+    .data-table .actions{display:flex;gap:6px}
+
+    /* ========================================
+     * SECTION: css-review
+     * Gallery review cards
+     * ======================================== */
+    .review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .review-card{background:var(--c-surface);border:1px solid var(--c-border-l);border-radius:var(--r-m);overflow:hidden;transition:box-shadow .25s var(--ease)}
+    .review-card:hover{box-shadow:var(--sh-m)}
+    .review-thumb{height:160px;display:flex;align-items:center;justify-content:center;position:relative}
+    .review-thumb svg{width:32px;height:32px;color:rgba(255,255,255,.6)}
+    .review-body{padding:14px 16px}
+    .review-title{font-size:.88rem;font-weight:500;margin-bottom:4px}
+    .review-meta{font-size:.75rem;color:var(--c-text-3);margin-bottom:12px}
+    .review-actions{display:flex;gap:8px}
+
+    /* ========================================
+     * SECTION: css-toast
+     * ======================================== */
+    .toast-wrap{position:fixed;top:20px;right:24px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    .toast{padding:10px 16px;border-radius:var(--r-s);font-size:.82rem;font-weight:500;box-shadow:var(--sh-m);transform:translateX(120%);transition:transform .3s var(--ease);pointer-events:auto;display:flex;align-items:center;gap:8px;max-width:320px}
+    .toast.show{transform:translateX(0)}
+    .toast-info{background:var(--c-text);color:#fff}
+    .toast-success{background:var(--c-success);color:#fff}
+    .toast-error{background:var(--c-error);color:#fff}
+
+    /* ========================================
+     * SECTION: css-responsive
+     * ======================================== */
+    .mobile-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;width:36px;height:36px;border-radius:var(--r-s);background:var(--c-surface);box-shadow:var(--sh-m);align-items:center;justify-content:center}
+    .mobile-toggle svg{width:18px;height:18px;stroke:var(--c-text);stroke-width:2;fill:none}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:99}
+
+    @media(max-width:900px){
+        .sidebar{transform:translateX(-100%)}
+        .sidebar.open{transform:translateX(0)}
+        .sidebar-overlay.open{display:block}
+        .main-content{margin-left:0;padding:16px;padding-top:56px}
+        .mobile-toggle{display:flex}
+        .stat-grid{grid-template-columns:repeat(2,1fr)}
+        .form-row{grid-template-columns:1fr}
+        .field-group{grid-template-columns:1fr}
+        .review-grid{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){
+        *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+    }
+    </style>
+</head>
+<body>
+
+<!-- SVG sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <defs>
+        <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="6" cy="18" r="1" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></symbol>
+        <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></symbol>
+        <symbol id="i-ai" viewBox="0 0 24 24"><path d="M12 2v6M12 16v6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M16 12h6M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+        <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></symbol>
+        <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" fill="currentColor" stroke="none"/></symbol>
+    </defs>
+</svg>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ========================================
+     SECTION: login-gate
+     管理员登录门控
+     ======================================== -->
+<div class="login-gate" id="loginGate">
+    <div class="login-card">
+        <div class="login-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <h1>管理后台</h1>
+        <p>66QN Minecraft 服务器</p>
+        <form onsubmit="doAdminLogin(event)">
+            <div class="field">
+                <label class="field-label">管理员账号</label>
+                <input class="field-input" type="text" id="adminLoginUser" placeholder="用户名" required autocomplete="username">
+            </div>
+            <div class="field">
+                <label class="field-label">密码</label>
+                <input class="field-input" type="password" id="adminLoginPass" placeholder="密码" required autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary" type="submit" style="width:100%;margin-top:8px">登录</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================
+     SECTION: admin-shell
+     管理后台主布局（登录后显示）
+     ======================================== -->
+<div class="admin-layout" id="adminShell" style="display:none">
+    <!-- Mobile toggle -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="菜单">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+            <span>66QN</span>
+            <small>Admin</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section">概览</div>
+            <div class="sidebar-nav-item active" data-panel="dashboard" onclick="switchPanel('dashboard')">
+                <span class="icon"><svg><use href="#i-dashboard"/></svg></span>
+                仪表盘
+            </div>
+            <div class="sidebar-section">管理</div>
+            <div class="sidebar-nav-item" data-panel="server" onclick="switchPanel('server')">
+                <span class="icon"><svg><use href="#i-server"/></svg></span>
+                服务器信息
+            </div>
+            <div class="sidebar-nav-item" data-panel="gallery" onclick="switchPanel('gallery')">
+                <span class="icon"><svg><use href="#i-image"/></svg></span>
+                实录审核
+            </div>
+            <div class="sidebar-nav-item" data-panel="forum" onclick="switchPanel('forum')">
+                <span class="icon"><svg><use href="#i-chat"/></svg></span>
+                社区管理
+            </div>
+            <div class="sidebar-section">配置</div>
+            <div class="sidebar-nav-item" data-panel="ai" onclick="switchPanel('ai')">
+                <span class="icon"><svg><use href="#i-ai"/></svg></span>
+                AI 客服配置
+            </div>
+        </nav>
+        <div class="sidebar-foot">
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">A</div>
+                <div>
+                    <div style="font-size:.82rem;font-weight:500">admin</div>
+                    <div style="font-size:.7rem;color:var(--c-text-3)">
+                        <a href="#" onclick="doAdminLogout();return false" style="color:rgba(245,245,247,.5)">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <!-- ============ Dashboard Panel ============ -->
+        <div class="panel active" id="panelDashboard">
+            <div class="content-header">
+                <h1>仪表盘</h1>
+                <p>服务器运行概况</p>
+            </div>
+            <div class="stat-grid" id="dashStats">
+                <div class="stat-card">
+                    <div class="stat-label">在线人数</div>
+                    <div class="stat-num accent" id="dashOnline">23</div>
+                    <div class="stat-sub">/ <span id="dashMax">100</span> 最大容量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">待审核实录</div>
+                    <div class="stat-num" id="dashPending">3</div>
+                    <div class="stat-sub">需要处理</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">社区帖子</div>
+                    <div class="stat-num" id="dashPosts">4</div>
+                    <div class="stat-sub">已发布</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">注册申请</div>
+                    <div class="stat-num" id="dashRegs">2</div>
+                    <div class="stat-sub">待审批</div>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-card-title">最近活动</div>
+                <table class="data-table">
+                    <thead><tr><th>时间</th><th>事件</th><th>操作者</th></tr></thead>
+                    <tbody>
+                        <tr><td>10月5日 18:30</td><td>更新了服务器在线人数</td><td>admin</td></tr>
+                        <tr><td>10月5日 14:22</td><td>新帖子通过 AI 审核</td><td>系统</td></tr>
+                        <tr><td>10月4日 20:15</td><td>审核通过了 2 张实录图片</td><td>admin</td></tr>
+                        <tr><td>10月3日 09:00</td><td>新成员注册申请</td><td>Miner42</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============ Server Panel ============ -->
+        <div class="panel" id="panelServer">
+            <div class="content-header">
+                <h1>服务器信息</h1>
+                <p>管理服务器地址、版本与在线数据</p>
+            </div>
+            <div class="form-card">
+                <div class="form-card-title">基础信息</div>
+                <div class="form-card-desc">修改后点击保存即时生效，前台页面将同步显示最新数据。</div>
+                <div class="form-row">
+                    <div class="field">
+                        <label class="field-label">IP 地址</label>
+                        <input class="field-input" type="text" id="srvIp" value="play.starcraft-mc.cn">
+                        <span class="field-hint">服务器域名或 IP 地址</span>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">端口</label>
+                        <input class="field-input" type="number" id="srvPort" value="25565">
+                        <span class="field-hint">默认 25565</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label class="field-label">游戏版本</label>
+                        <input class="field-input" type="text" id="srvVer" value="1.21.4" placeholder="如 1.21.4">
+                        <span class="field-hint">留空则自动通过 SLP 协议检测</span>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">服务器 MOTD</label>
+                        <input class="field-input" type="text" id="srvMotd" value="Welcome to Starcraft" placeholder="服务器描述">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label class="field-label">在线人数</label>
+                        <input class="field-input" type="number" id="srvOnline" value="23" min="0">
+                        <span class="field-hint">手动更新当前在线人数</span>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">最大人数</label>
+                        <input class="field-input" type="number" id="srvMax" value="100" min="1">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveServerInfo()">
+                    <span class="icon" style="width:14px;height:14px"><svg><use href="#i-save"/></svg></span>
+                    保存
+                </button>
+            </div>
+            <!--
+            【后端 API 契约 — 服务器信息】
+
+            PUT /api/admin/server
+            Headers: Authorization: Bearer <jwt_token>
+            Body: {
+                "ip": string,
+                "port": number,
+                "version": string,
+                "motd": string,
+                "onlineNow": number,
+                "maxPlayers": number
+            }
+            Response: { "code": 0, "msg": "ok", "data": { "updatedAt": "ISO8601" } }
+
+            前台读取接口:
+            GET /api/server/status
+            Response: { "version", "onlineNow", "maxPlayers", "motd", "ip", "port" }
+
+            版本自动检测:
+            后端每 60s 向 MC 服务器发送 SLP ping，
+            解析返回的 version.name 字段。
+            管理员手动填写的版本优先级高于自动检测。
+            -->
+        </div>
+
+        <!-- ============ Gallery Review Panel ============ -->
+        <div class="panel" id="panelGallery">
+            <div class="content-header">
+                <h1>实录审核</h1>
+                <p>审核玩家上传的服务器截图</p>
+            </div>
+            <div class="form-card" style="padding:16px 20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                    <div style="display:flex;gap:4px;background:var(--c-surface-alt);border-radius:var(--r-s);padding:3px">
+                        <button class="btn btn-sm" style="background:var(--c-surface);box-shadow:var(--sh-s)" onclick="filterReview('pending')">待审核 <span id="reviewPendingCount">3</span></button>
+                        <button class="btn btn-sm" style="color:var(--c-text-2)" onclick="filterReview('approved')">已通过</button>
+                        <button class="btn btn-sm" style="color:var(--c-text-2)" onclick="filterReview('rejected')">已拒绝</button>
+                    </div>
+                </div>
+            </div>
+            <div class="review-grid" id="reviewGrid"></div>
+        </div>
+
+        <!-- ============ Forum Management Panel ============ -->
+        <div class="panel" id="panelForum">
+            <div class="content-header">
+                <h1>社区管理</h1>
+                <p>查看和管理社区帖子</p>
+            </div>
+            <div class="form-card" style="padding:0;overflow:hidden">
+                <table class="data-table" id="forumTable">
+                    <thead>
+                        <tr>
+                            <th>作者</th>
+                            <th>内容</th>
+                            <th>状态</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forumTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============ AI Config Panel ============ -->
+        <div class="panel" id="panelAi">
+            <div class="content-header">
+                <h1>AI 客服配置</h1>
+                <p>管理前台 AI 悬浮球助手的服务参数</p>
+            </div>
+            <div class="form-card">
+                <div class="form-card-title">服务接入</div>
+                <div class="form-card-desc">配置 AI 服务的接入信息。API 密钥经 HTTPS 传输后在服务端使用 AES-256-GCM 加密存储，前端不会保存或展示明文密钥。</div>
+                <div class="form-row">
+                    <div class="field">
+                        <label class="field-label">服务商</label>
+                        <select class="field-input field-select" id="aiProvider">
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic</option>
+                            <option value="qwen">通义千问</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="custom">自定义接口</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">模型 ID</label>
+                        <input class="field-input" type="text" id="aiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini">
+                        <span class="field-hint">如 gpt-4o-mini、claude-3-haiku、qwen-turbo</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">API 端点</label>
+                    <input class="field-input" type="url" id="aiEndpoint" placeholder="https://api.openai.com/v1/chat/completions">
+                    <span class="field-hint">完整的 API 请求 URL</span>
+                </div>
+                <div class="field">
+                    <label class="field-label">API 密钥</label>
+                    <div class="field-secret">
+                        <input class="field-input" type="password" id="aiKey" placeholder="sk-...">
+                        <button class="btn-icon" onclick="toggleKeyVis()" id="btnKeyVis" aria-label="切换可见性">
+                            <span class="icon"><svg><use href="#i-eye"/></svg></span>
+                        </button>
+                    </div>
+                    <span class="field-hint">密钥仅在保存时传输，之后前端显示脱敏形式。后端使用 Vault 或 AWS Secrets Manager 存储。</span>
+                </div>
+                <button class="btn btn-primary" onclick="saveAiService()">
+                    <span class="icon" style="width:14px;height:14px"><svg><use href="#i-save"/></svg></span>
+                    保存接入配置
+                </button>
+            </div>
+
+            <div class="form-card">
+                <div class="form-card-title">模型参数</div>
+                <div class="form-card-desc">控制 AI 回复的生成行为与上下文窗口。</div>
+                <div class="field-group">
+                    <div class="field">
+                        <label class="field-label">最大输入 Token</label>
+                        <input class="field-input" type="number" id="aiMaxInput" value="2048" min="256" max="128000" step="256">
+                        <span class="field-hint">单次请求最大输入长度</span>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">最大输出 Token</label>
+                        <input class="field-input" type="number" id="aiMaxOutput" value="512" min="64" max="8192" step="64">
+                        <span class="field-hint">AI 回复最大生成长度</span>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">上下文窗口</label>
+                        <input class="field-input" type="number" id="aiContext" value="4096" min="512" max="128000" step="512">
+                        <span class="field-hint">保留历史对话的 Token 上限</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Temperature</label>
+                    <div class="field-range">
+                        <input type="range" id="aiTemp" min="0" max="100" value="30" oninput="document.getElementById('tempLabel').textContent=(this.value/100).toFixed(2)">
+                        <span id="tempLabel">0.30</span>
+                    </div>
+                    <span class="field-hint">较低值使回复更确定，较高值更有创造性</span>
+                </div>
+                <button class="btn btn-primary" onclick="saveAiParams()">
+                    <span class="icon" style="width:14px;height:14px"><svg><use href="#i-save"/></svg></span>
+                    保存模型参数
+                </button>
+            </div>
+
+            <div class="form-card">
+                <div class="form-card-title">系统提示词</div>
+                <div class="form-card-desc">定义 AI 助手的角色、行为规范和知识库范围。此提示词会作为 system message 发送给模型。</div>
+                <div class="field">
+                    <textarea class="field-input field-textarea" id="aiPrompt" rows="10" placeholder="你是66QN服务器的 AI 助手...">你是「66QN」Minecraft 服务器的 AI 助手，名叫"66QN助手"。
+
+## 你的角色
+- 为玩家提供关于服务器的准确信息
+- 回答游戏玩法、规则、加入方式等问题
+- 保持友好、专业的语气
+
+## 你的知识范围
+- 服务器地址：play.starcraft-mc.cn:25565
+- 游戏版本：Java 1.21.4
+- 服务器类型：纯净生存，基础领地保护
+- 核心规则：不破坏他人建筑、不偷窃、不 cheating、友善交流
+- 加入方式：通过官网「加入」页面提交申请
+- 社区活动：每月建筑比赛和 PvP 锦标赛
+
+## 行为规范
+- 只回答与服务器相关的问题
+- 对不确定的信息，建议用户联系管理员
+- 不讨论政治、宗教等敏感话题
+- 不泄露管理员信息或服务器技术细节</textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveAiPrompt()">
+                    <span class="icon" style="width:14px;height:14px"><svg><use href="#i-save"/></svg></span>
+                    保存提示词
+                </button>
+            </div>
+
+            <!--
+            【安全架构 — AI 配置】
+
+            1. 密钥存储：
+               - 前端提交时经 HTTPS 传输至后端
+               - 后端使用 AES-256-GCM 加密后存入数据库
+               - 运行时通过环境变量注入，不以明文出现在日志中
+               - 推荐方案：HashiCorp Vault / AWS Secrets Manager
+
+            2. API 调用链路：
+               前端用户提问 → POST /api/ai/chat { "message": "...", "history": [...] }
+               → 后端从安全存储中解密 API Key
+               → 构建完整请求（system prompt + history + user message）
+               → 发送到 {aiEndpoint}，携带 Authorization: Bearer {decrypted_key}
+               → 限制 max_tokens={aiMaxOutput}
+               → 流式返回或等待完整响应后返回前端
+
+            3. 请求示例：
+               POST {aiEndpoint}
+               Headers: {
+                   "Authorization": "Bearer {从安全存储解密的密钥}",
+                   "Content-Type": "application/json"
+               }
+               Body: {
+                   "model": "{aiModel}",
+                   "max_tokens": {aiMaxOutput},
+                   "temperature": {aiTemp},
+                   "messages": [
+                       {"role": "system", "content": "{aiPrompt}"},
+                       ...history (受 aiContext 限制),
+                       {"role": "user", "content": "{用户输入}"}
+                   ]
+               }
+
+            4. 上下文管理：
+               - 前端维护当前会话的 message history
+               - 每次请求前计算总 Token 数，超过 aiContext 时截断最早的消息
+               - Token 估算：约 4 字符 = 1 Token（中文约 1.5 字符 = 1 Token）
+
+            5. 密钥隔离原则：
+               - 前端代码中不包含任何 API 密钥
+               - 管理面板的密钥输入框使用 type="password"
+               - 密钥仅在保存时传输一次，之后显示脱敏形式（sk-****xxxx）
+               - 读取配置时后端返回脱敏值，不返回完整密钥
+            -->
+        </div>
+    </main>
+</div>
+
+<script>
+/* ========================================
+ * SECTION: js-utils
+ * ======================================== */
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+
+function toast(msg, type) {
+    type = type || 'info';
+    var wrap = $('#toastWrap');
+    var el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.innerHTML = '<span class="icon" style="width:14px;height:14px;flex-shrink:0"><svg><use href="#i-' + (type === 'success' ? 'check' : 'x') + '"/></svg></span>' + msg;
+    wrap.appendChild(el);
+    requestAnimationFrame(function() { el.classList.add('show'); });
+    setTimeout(function() { el.classList.remove('show'); setTimeout(function() { el.remove(); }, 300); }, 2600);
+}
+
+function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+function load(k, def) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
+
+/* ========================================
+ * SECTION: js-auth
+ * 管理员认证
+ * ======================================== */
+function doAdminLogin(e) {
+    e.preventDefault();
+    var user = $('#adminLoginUser').value.trim();
+    var pass = $('#adminLoginPass').value;
+    if (user === 'admin' && pass === 'admin123') {
+        save('sc_admin_auth', { user: 'admin', ts: Date.now() });
+        enterAdmin();
+        toast('登录成功', 'success');
+    } else {
+        toast('账号或密码错误', 'error');
+    }
+}
+
+function doAdminLogout() {
+    localStorage.removeItem('sc_admin_auth');
+    $('#adminShell').style.display = 'none';
+    $('#loginGate').style.display = 'flex';
+    $('#adminLoginUser').value = '';
+    $('#adminLoginPass').value = '';
+}
+
+function enterAdmin() {
+    $('#loginGate').style.display = 'none';
+    $('#adminShell').style.display = 'flex';
+    initDashboard();
+    initReview();
+    initForumTable();
+    loadAiConfig();
+}
+
+/* ========================================
+ * SECTION: js-panel
+ * Panel switching
+ * ======================================== */
+function switchPanel(name) {
+    $$('.panel').forEach(function(p) { p.classList.remove('active'); });
+    var target = document.getElementById('panel' + name.charAt(0).toUpperCase() + name.slice(1));
+    if (target) target.classList.add('active');
+    $$('.sidebar-nav-item').forEach(function(item) {
+        item.classList.toggle('active', item.getAttribute('data-panel') === name);
+    });
+    // Close mobile sidebar
+    $('#sidebar').classList.remove('open');
+    $('#sidebarOverlay').classList.remove('open');
+}
+
+/* ========================================
+ * SECTION: js-dashboard
+ * ======================================== */
+function initDashboard() {
+    var server = load('sc_server', { onlineNow: 23, maxPlayers: 100 });
+    var gallery = load('sc_gallery', []);
+    var forum = load('sc_forum', []);
+    var regs = load('sc_registrations', []);
+    $('#dashOnline').textContent = server.onlineNow || 23;
+    $('#dashMax').textContent = server.maxPlayers || 100;
+    $('#dashPending').textContent = gallery.filter(function(g) { return g.status === 'pending'; }).length || 3;
+    $('#dashPosts').textContent = forum.length || 4;
+    $('#dashRegs').textContent = regs.filter(function(r) { return r.status === 'pending'; }).length || 2;
+}
+
+/* ========================================
+ * SECTION: js-server
+ * ======================================== */
+function saveServerInfo() {
+    var info = {
+        ip: $('#srvIp').value.trim(),
+        port: parseInt($('#srvPort').value) || 25565,
+        version: $('#srvVer').value.trim() || '1.21.4',
+        motd: $('#srvMotd').value.trim(),
+        onlineNow: parseInt($('#srvOnline').value) || 0,
+        maxPlayers: parseInt($('#srvMax').value) || 100,
+        updatedAt: new Date().toISOString()
+    };
+    save('sc_server', info);
+    toast('服务器信息已保存', 'success');
+    // Refresh dashboard
+    $('#dashOnline').textContent = info.onlineNow;
+    $('#dashMax').textContent = info.maxPlayers;
+}
+
+/* ========================================
+ * SECTION: js-review
+ * Gallery review
+ * ======================================== */
+var reviewFilter = 'pending';
+var mockGallery = [
+    { id: 'g4', title: '新矿区入口', author: 'Miner42', status: 'pending', createdAt: '2026-10-05', size: 6100 },
+    { id: 'g5', title: '海底神殿', author: 'OceanExplorer', status: 'pending', createdAt: '2026-10-04', size: 9900 },
+    { id: 'g6', title: '末地城堡', author: 'DragonSlayer', status: 'pending', createdAt: '2026-10-05', size: 5400 },
+    { id: 'g1', title: '主城鸟瞰', author: 'Steve_', status: 'approved', createdAt: '2026-10-03', size: 8200 },
+    { id: 'g2', title: '红石大厅', author: 'RedstoneKing', status: 'approved', createdAt: '2026-10-02', size: 9500 },
+    { id: 'g3', title: '月下村庄', author: 'Luna_Builder', status: 'approved', createdAt: '2026-10-01', size: 7800 }
+];
+
+function initReview() {
+    renderReview();
+}
+
+function filterReview(f) {
+    reviewFilter = f;
+    renderReview();
+}
+
+function renderReview() {
+    var gallery = load('sc_gallery', mockGallery);
+    var items = gallery.filter(function(g) { return g.status === reviewFilter; });
+    var grid = $('#reviewGrid');
+    $('#reviewPendingCount').textContent = gallery.filter(function(g) { return g.status === 'pending'; }).length;
+
+    if (!items.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--c-text-3)"><p>该分类下暂无内容</p></div>';
+        return;
+    }
+
+    var gradients = [
+        'linear-gradient(135deg,#667eea,#764ba2)',
+        'linear-gradient(135deg,#f093fb,#f5576c)',
+        'linear-gradient(135deg,#4facfe,#00f2fe)',
+        'linear-gradient(135deg,#43e97b,#38f9d7)',
+        'linear-gradient(135deg,#fa709a,#fee140)',
+        'linear-gradient(135deg,#a18cd1,#fbc2eb)'
+    ];
+
+    grid.innerHTML = '';
+    items.forEach(function(item, i) {
+        var card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML =
+            '<div class="review-thumb" style="background:' + gradients[i % gradients.length] + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>' +
+            '</div>' +
+            '<div class="review-body">' +
+                '<div class="review-title">' + escHtml(item.title) + '</div>' +
+                '<div class="review-meta">' + escHtml(item.author) + ' / ' + item.createdAt + ' / ' + (item.size / 1024).toFixed(1) + 'KB</div>' +
+                (reviewFilter === 'pending' ?
+                    '<div class="review-actions">' +
+                        '<button class="btn btn-success btn-sm" onclick="reviewAction(\'' + item.id + '\',\'approved\')"><span class="icon" style="width:12px;height:12px"><svg><use href="#i-check"/></svg></span>通过</button>' +
+                        '<button class="btn btn-danger btn-sm" onclick="reviewAction(\'' + item.id + '\',\'rejected\')"><span class="icon" style="width:12px;height:12px"><svg><use href="#i-x"/></svg></span>拒绝</button>' +
+                    '</div>'
+                : '<span class="badge" style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600;background:' + (reviewFilter === 'approved' ? '#d4edda;color:#155724' : '#f8d7da;color:#721c24') + '">' + (reviewFilter === 'approved' ? '已通过' : '已拒绝') + '</span>') +
+            '</div>';
+        grid.appendChild(card);
+    });
+}
+
+function reviewAction(id, action) {
+    var gallery = load('sc_gallery', mockGallery);
+    gallery.forEach(function(g) { if (g.id === id) g.status = action; });
+    save('sc_gallery', gallery);
+    toast(action === 'approved' ? '已通过' : '已拒绝', 'success');
+    renderReview();
+    initDashboard();
+}
+
+/* ========================================
+ * SECTION: js-forum-admin
+ * ======================================== */
+var mockForum = [
+    { id: 'f1', author: 'Steve_', content: '刚在主城建了一个图书馆，欢迎大家来参观。三层楼高，里面有很多附魔书可以交换。', status: 'approved', createdAt: '2026-10-04T14:22:00+08:00', likes: 8 },
+    { id: 'f2', author: 'RedstoneKing', content: '分享一个全自动甘蔗农场设计，每小时产出 3000+，效率很高。', status: 'approved', createdAt: '2026-10-03T09:15:00+08:00', likes: 15 },
+    { id: 'f3', author: 'Luna_Builder', content: '有人想一起做一个中世纪主题小镇吗？目前在西区找了一块地。', status: 'approved', createdAt: '2026-10-02T20:00:00+08:00', likes: 6 },
+    { id: 'f4', author: 'Miner42', content: '请问 1.21.4 的新铜块氧化机制是怎样的？', status: 'approved', createdAt: '2026-10-01T11:30:00+08:00', likes: 3 }
+];
+
+function initForumTable() {
+    var forum = load('sc_forum', mockForum);
+    var tbody = $('#forumTableBody');
+    tbody.innerHTML = '';
+    forum.forEach(function(post) {
+        var tr = document.createElement('tr');
+        var statusColor = post.status === 'approved' ? '#155724' : post.status === 'rejected' ? '#721c24' : '#856404';
+        var statusBg = post.status === 'approved' ? '#d4edda' : post.status === 'rejected' ? '#f8d7da' : '#fff3cd';
+        var statusText = post.status === 'approved' ? '已通过' : post.status === 'rejected' ? '已拒绝' : '待审核';
+        tr.innerHTML =
+            '<td style="font-weight:500;white-space:nowrap">' + escHtml(post.author) + '</td>' +
+            '<td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(post.content) + '</td>' +
+            '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600;background:' + statusBg + ';color:' + statusColor + '">' + statusText + '</span></td>' +
+            '<td style="white-space:nowrap;color:var(--c-text-3);font-size:.8rem">' + new Date(post.createdAt).toLocaleDateString('zh-CN') + '</td>' +
+            '<td class="actions">' +
+                '<button class="btn btn-sm btn-danger" onclick="deleteForumPost(\'' + post.id + '\')"><span class="icon" style="width:12px;height:12px"><svg><use href="#i-x"/></svg></span>删除</button>' +
+            '</td>';
+        tbody.appendChild(tr);
+    });
+}
+
+function deleteForumPost(id) {
+    var forum = load('sc_forum', mockForum);
+    forum = forum.filter(function(p) { return p.id !== id; });
+    save('sc_forum', forum);
+    toast('帖子已删除', 'success');
+    initForumTable();
+    initDashboard();
+}
+
+/* ========================================
+ * SECTION: js-ai
+ * AI configuration management
+ * ======================================== */
+function loadAiConfig() {
+    var cfg = load('sc_ai_config', {});
+    if (cfg.provider) $('#aiProvider').value = cfg.provider;
+    if (cfg.endpoint) $('#aiEndpoint').value = cfg.endpoint;
+    if (cfg.model) $('#aiModel').value = cfg.model;
+    if (cfg.prompt) $('#aiPrompt').value = cfg.prompt;
+    if (cfg.maxInput) $('#aiMaxInput').value = cfg.maxInput;
+    if (cfg.maxOutput) $('#aiMaxOutput').value = cfg.maxOutput;
+    if (cfg.context) $('#aiContext').value = cfg.context;
+    if (cfg.temperature !== undefined) {
+        $('#aiTemp').value = Math.round(cfg.temperature * 100);
+        $('#tempLabel').textContent = cfg.temperature.toFixed(2);
+    }
+    if (cfg.hasKey) {
+        $('#aiKey').value = '';
+        $('#aiKey').placeholder = 'sk-****' + (cfg.keySuffix || 'xxxx');
+    }
+}
+
+function saveAiService() {
+    var cfg = load('sc_ai_config', {});
+    cfg.provider = $('#aiProvider').value;
+    cfg.endpoint = $('#aiEndpoint').value.trim();
+    cfg.model = $('#aiModel').value.trim();
+    cfg.hasKey = !!$('#aiKey').value;
+    if ($('#aiKey').value) cfg.keySuffix = $('#aiKey').value.slice(-4);
+    save('sc_ai_config', cfg);
+    toast('接入配置已保存', 'success');
+}
+
+function saveAiParams() {
+    var cfg = load('sc_ai_config', {});
+    cfg.maxInput = parseInt($('#aiMaxInput').value) || 2048;
+    cfg.maxOutput = parseInt($('#aiMaxOutput').value) || 512;
+    cfg.context = parseInt($('#aiContext').value) || 4096;
+    cfg.temperature = parseInt($('#aiTemp').value) / 100;
+    save('sc_ai_config', cfg);
+    toast('模型参数已保存', 'success');
+}
+
+function saveAiPrompt() {
+    var cfg = load('sc_ai_config', {});
+    cfg.prompt = $('#aiPrompt').value;
+    save('sc_ai_config', cfg);
+    toast('提示词已保存', 'success');
+}
+
+function toggleKeyVis() {
+    var inp = $('#aiKey');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+/* ========================================
+ * SECTION: js-init
+ * ======================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    // Check existing auth
+    var auth = load('sc_admin_auth', null);
+    if (auth && auth.user === 'admin') {
+        enterAdmin();
+    }
+
+    // Mobile sidebar toggle
+    var toggle = $('#mobileToggle');
+    var sidebar = $('#sidebar');
+    var overlay = $('#sidebarOverlay');
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        });
+    }
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        });
+    }
+});
+</script>
+</body>
+</html>
