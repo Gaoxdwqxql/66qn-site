@@ -1250,16 +1250,25 @@ async function loadServerStatus() {
 
 function detectServer() {
     var info = state.server || {};
-    var version = info.version || '1.21.4';
-    var online = info.onlineNow != null ? info.onlineNow : 0;
-    var max = info.maxPlayers || 100;
     var isOnline = info.online !== false;
 
-    $('#infoVersion').textContent = version;
-    $('#infoPlayers').textContent = online + ' / ' + max;
+    // 地址与端口永远显示
     $('#infoAddr').textContent = SERVER_HOST;
     $('#heroIpText').textContent = SERVER_HOST;
     $('#infoPort').textContent = SERVER_PORT;
+
+    if (!isOnline) {
+        // ★ 离线：显示占位符，不显示后端返回的默认值
+        $('#infoVersion').textContent = '—';
+        $('#infoPlayers').textContent = '离线';
+    } else {
+        // ★ 在线：显示真实数据
+        var version = info.version || '—';
+        var online = info.onlineNow != null ? info.onlineNow : 0;
+        var max = info.maxPlayers || 0;
+        $('#infoVersion').textContent = version;
+        $('#infoPlayers').textContent = online + ' / ' + max;
+    }
 
     var badgeDot = document.querySelector('.hero-badge-dot');
     if (badgeDot) badgeDot.style.background = isOnline ? 'var(--c-success)' : 'var(--c-error)';
