@@ -136,24 +136,8 @@
     .link-card-arrow{color:var(--c-text-3);flex-shrink:0;transition:transform .2s var(--ease)}
     .link-card:hover .link-card-arrow{transform:translateX(3px);color:var(--c-accent)}
     .link-card-arrow svg{width:16px;height:16px}
-    .launcher-block{
-        background: linear-gradient(180deg, #eef2f7 0%, #e6ecf3 100%);
-        border: 1px solid #cdd5de;
-        border-radius: var(--r-xl);
-        padding: 32px 28px;
-        margin-top: 40px;
-        position: relative;
-        overflow: hidden;
-    }
-    .launcher-block::before{
-        content:'';
-        position:absolute;
-        top:-80px;right:-80px;
-        width:280px;height:280px;
-        border-radius:50%;
-        background: radial-gradient(circle, rgba(0,113,227,.08) 0%, transparent 70%);
-        pointer-events:none;
-    }
+    .launcher-block{background: linear-gradient(180deg, #eef2f7 0%, #e6ecf3 100%);border: 1px solid #cdd5de;border-radius: var(--r-xl);padding: 32px 28px;margin-top: 40px;position: relative;overflow: hidden;}
+    .launcher-block::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background: radial-gradient(circle, rgba(0,113,227,.08) 0%, transparent 70%);pointer-events:none;}
     .launcher-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;position:relative;z-index:1}
     .launcher-head-icon{width:44px;height:44px;border-radius:12px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .launcher-head-icon svg{width:22px;height:22px}
@@ -788,6 +772,21 @@ function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(
 function load(k, def) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
 
 /* ========================================
+ * 图片 URL 解析（★ 兼容三种存储格式）
+ *   - data:...       → 直接返回（历史 base64 数据）
+ *   - http(s):...    → 直接返回（外链）
+ *   - /images/...    → 拼接 API_BASE（KV 代理）
+ *   - 其他           → 拼接 API_BASE
+ * ======================================== */
+function resolveImageUrl(url) {
+    if (!url) return '';
+    if (url.indexOf('data:') === 0) return url;
+    if (url.indexOf('http') === 0) return url;
+    if (url.indexOf('/') === 0) return API_BASE + url;
+    return API_BASE + '/' + url;
+}
+
+/* ========================================
  * 路由
  * ======================================== */
 var pageIds = ['home','gallery','forum','register','login'];
@@ -868,17 +867,14 @@ function triggerEntrance(container) {
  * ======================================== */
 function goAdmin() {
     if (!state.user) {
-        // 未登录，跳登录页
         toast('请先登录管理员账号', 'warning');
         navigate('login');
         return;
     }
     if (state.user.role !== 'admin') {
-        // 已登录但不是管理员
         toast('当前账号没有管理员权限', 'error');
         return;
     }
-    // 是管理员，打开后台
     window.open('/admin.html', '_blank');
 }
 
@@ -971,7 +967,6 @@ function updateNavAuth() {
     var u = state.user;
     $('#btnLogin').classList.toggle('hidden', !!u);
     $('#btnLogout').classList.toggle('hidden', !u);
-    // 管理后台按钮始终显示，通过 title 提示当前状态
     var adminBtn = $('#btnAdmin');
     if (adminBtn) {
         if (!u) {
@@ -1082,14 +1077,19 @@ function renderGallery() {
     items.forEach(function(item, i) {
         var card = document.createElement('div');
         card.className = 'gal-card fade-up stagger-' + Math.min(i + 1, 5);
-        var bgStyle = item.image_url && item.image_url.startsWith('http')
-            ? 'background-image:url(' + escHtml(item.image_url) + ');background-size:cover;background-position:center'
+
+        // ★ 用 resolveImageUrl 统一处理 data: / http(s): / /images/ 三种格式
+        var imgUrl = resolveImageUrl(item.image_url);
+        var hasImage = !!imgUrl;
+        var bgStyle = hasImage
+            ? 'background-image:url(\'' + imgUrl.replace(/'/g, "\\'") + '\');background-size:cover;background-position:center'
             : 'background:' + gradients[i % gradients.length];
+        var iconOpacity = hasImage ? 'opacity:0' : '';
         var statusBadge = item.status === 'pending' ? '<span class="badge badge-warn">待审核</span>' : '';
 
         card.innerHTML =
             '<div class="gal-img" style="' + bgStyle + '">' +
-                '<div class="gal-img-icon" style="' + (item.image_url && item.image_url.startsWith('http') ? 'opacity:0' : '') + '"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>' +
+                '<div class="gal-img-icon" style="' + iconOpacity + '"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>' +
             '</div>' +
             '<div class="gal-info">' +
                 '<div class="gal-title">' + escHtml(item.title) + '</div>' +
@@ -1112,24 +1112,33 @@ function compressImage(file, maxSizeKB, cb) {
     reader.onload = function(e) {
         var img = new Image();
         img.onload = function() {
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            var w = img.width, h = img.height, maxDim = 1600;
+            // 长边限制 1600px
+            var maxDim = 1600;
+            var w = img.width, h = img.height;
             if (w > maxDim || h > maxDim) {
                 var ratio = Math.min(maxDim / w, maxDim / h);
-                w = Math.round(w * ratio); h = Math.round(h * ratio);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
             }
-            canvas.width = w; canvas.height = h;
-            ctx.drawImage(img, 0, 0, w, h);
-            canvas.toBlob(function(blob) {
-                if (blob && blob.size > maxSizeKB * 1024) {
-                    canvas.toBlob(function(blob2) {
-                        cb(blob2 || blob);
-                    }, 'image/jpeg', 0.6);
-                } else {
-                    cb(blob);
-                }
-            }, 'image/jpeg', 0.85);
+            var canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+            var maxBytes = maxSizeKB * 1024;
+            var quality = 0.85;
+            function tryCompress() {
+                canvas.toBlob(function(blob) {
+                    if (!blob) { cb(null); return; }
+                    if (blob.size <= maxBytes || quality <= 0.3) {
+                        cb(blob);
+                    } else {
+                        quality -= 0.1;
+                        tryCompress();
+                    }
+                }, 'image/jpeg', quality);
+            }
+            tryCompress();
         };
         img.src = e.target.result;
     };
@@ -1411,7 +1420,8 @@ async function init() {
             if (!state.user) { toast('请先登录', 'error'); navigate('login'); fi.value = ''; return; }
 
             toast('正在压缩上传...', 'info');
-            compressImage(file, 10 * 1024, async function(blob) {
+            // ★ KV 存储，放宽到 1.5MB 目标
+            compressImage(file, 1500, async function(blob) {
                 if (!blob) { toast('图片处理失败', 'error'); return; }
                 var fd = new FormData();
                 fd.append('image', blob, file.name);
