@@ -86,7 +86,7 @@
     @keyframes hero-glow{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-40px,30px) scale(1.15)}}
     .hero-inner{position:relative;z-index:1;text-align:center;max-width:1080px;margin:0 auto;padding:0 24px}
     .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:var(--c-surface);border:1px solid var(--c-border-l);font-size:.78rem;color:var(--c-text-2);margin-bottom:20px;font-weight:500;box-shadow:var(--sh-s)}
-    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--c-success);animation:pulse-dot 2s infinite}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--c-success);animation:pulse-dot 2s infinite;transition:background .3s}
     @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
     .hero-title{font-size:3.4rem;font-weight:700;letter-spacing:3px;margin-bottom:12px;background:linear-gradient(135deg,#1d1d1f 20%,#0071e3 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
     .hero-sub{font-size:1.1rem;color:var(--c-text-2);margin-bottom:32px;font-weight:400;max-width:420px;margin-left:auto;margin-right:auto}
@@ -123,7 +123,6 @@
     .feat-icon svg{width:24px;height:24px}
     .feat-card h3{font-size:.95rem;font-weight:600;margin-bottom:6px}
     .feat-card p{font-size:.85rem;color:var(--c-text-2);line-height:1.6}
-    /* 通用链接卡片 */
     .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
     .link-card{display:flex;align-items:center;gap:14px;background:var(--c-surface);border:1px solid var(--c-border-l);border-radius:var(--r-m);padding:18px 20px;transition:box-shadow .25s var(--ease),transform .25s var(--ease),border-color .25s var(--ease);text-decoration:none;color:var(--c-text)}
     .link-card:hover{box-shadow:var(--sh-m);transform:translateY(-2px);border-color:var(--c-border);color:var(--c-text)}
@@ -135,9 +134,6 @@
     .link-card-arrow{color:var(--c-text-3);flex-shrink:0;transition:transform .2s var(--ease)}
     .link-card:hover .link-card-arrow{transform:translateX(3px);color:var(--c-accent)}
     .link-card-arrow svg{width:16px;height:16px}
-    /* ========================================
-     * 启动器下载区块（视觉强化）
-     * ======================================== */
     .launcher-block{
         background: linear-gradient(180deg, #eef2f7 0%, #e6ecf3 100%);
         border: 1px solid #cdd5de;
@@ -156,161 +152,32 @@
         background: radial-gradient(circle, rgba(0,113,227,.08) 0%, transparent 70%);
         pointer-events:none;
     }
-    .launcher-head{
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 6px;
-        position: relative;
-        z-index: 1;
-    }
-    .launcher-head-icon{
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: #1d1d1f;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
+    .launcher-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;position:relative;z-index:1}
+    .launcher-head-icon{width:44px;height:44px;border-radius:12px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .launcher-head-icon svg{width:22px;height:22px}
     .launcher-title-wrap{flex:1;min-width:0}
-    .launcher-title{
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--c-text);
-        letter-spacing: .5px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    .launcher-tag{
-        font-size: .68rem;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background: rgba(0,113,227,.12);
-        color: var(--c-accent);
-        letter-spacing: .5px;
-        text-transform: uppercase;
-    }
-    .launcher-desc{
-        font-size: .82rem;
-        color: var(--c-text-2);
-        margin-top: 4px;
-        line-height: 1.6;
-    }
-    .launcher-notice{
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        background: rgba(255,159,10,.1);
-        border: 1px solid rgba(255,159,10,.3);
-        color: #8a5500;
-        border-radius: var(--r-m);
-        padding: 10px 14px;
-        font-size: .78rem;
-        line-height: 1.6;
-        margin: 18px 0 20px;
-        position: relative;
-        z-index: 1;
-    }
+    .launcher-title{font-size:1.25rem;font-weight:700;color:var(--c-text);letter-spacing:.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .launcher-tag{font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(0,113,227,.12);color:var(--c-accent);letter-spacing:.5px;text-transform:uppercase}
+    .launcher-desc{font-size:.82rem;color:var(--c-text-2);margin-top:4px;line-height:1.6}
+    .launcher-notice{display:flex;align-items:flex-start;gap:8px;background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.3);color:#8a5500;border-radius:var(--r-m);padding:10px 14px;font-size:.78rem;line-height:1.6;margin:18px 0 20px;position:relative;z-index:1}
     .launcher-notice svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:#b86f00}
-    .launcher-grid{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        position: relative;
-        z-index: 1;
-    }
-    .launcher-card{
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        background: #ffffff;
-        border: 2px solid transparent;
-        border-radius: var(--r-l);
-        padding: 18px 18px;
-        text-decoration: none;
-        color: var(--c-text);
-        transition: all .25s var(--ease);
-        position: relative;
-        box-shadow: 0 1px 3px rgba(31,45,61,.06);
-    }
-    .launcher-card:hover{
-        border-color: var(--launcher-color, var(--c-accent));
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px -8px rgba(31,45,61,.18);
-        color: var(--c-text);
-    }
-    .launcher-card:hover .launcher-card-arrow{
-        transform: translateX(4px);
-        color: var(--launcher-color, var(--c-accent));
-    }
-    .launcher-card:hover .launcher-card-logo{
-        transform: scale(1.08);
-    }
-    .launcher-card-logo{
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        color: #fff;
-        transition: transform .25s var(--ease-spring);
-        box-shadow: 0 4px 10px -3px var(--launcher-shadow, rgba(0,0,0,.2));
-    }
+    .launcher-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;position:relative;z-index:1}
+    .launcher-card{display:flex;align-items:center;gap:14px;background:#ffffff;border:2px solid transparent;border-radius:var(--r-l);padding:18px 18px;text-decoration:none;color:var(--c-text);transition:all .25s var(--ease);position:relative;box-shadow:0 1px 3px rgba(31,45,61,.06)}
+    .launcher-card:hover{border-color:var(--launcher-color,var(--c-accent));transform:translateY(-3px);box-shadow:0 12px 24px -8px rgba(31,45,61,.18);color:var(--c-text)}
+    .launcher-card:hover .launcher-card-arrow{transform:translateX(4px);color:var(--launcher-color,var(--c-accent))}
+    .launcher-card:hover .launcher-card-logo{transform:scale(1.08)}
+    .launcher-card-logo{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;transition:transform .25s var(--ease-spring);box-shadow:0 4px 10px -3px var(--launcher-shadow,rgba(0,0,0,.2))}
     .launcher-card-logo svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
     .launcher-card-body{flex:1;min-width:0}
-    .launcher-card-name{
-        font-size: .95rem;
-        font-weight: 700;
-        color: var(--c-text);
-        letter-spacing: .3px;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .launcher-card-name .ver{
-        font-size: .68rem;
-        font-weight: 500;
-        color: var(--c-text-3);
-        background: var(--c-surface-alt);
-        padding: 1px 6px;
-        border-radius: 4px;
-        letter-spacing: 0;
-    }
-    .launcher-card-platforms{
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-        margin-top: 2px;
-    }
-    .launcher-platform{
-        font-size: .65rem;
-        font-weight: 600;
-        padding: 1px 6px;
-        border-radius: 3px;
-        background: var(--c-surface-alt);
-        color: var(--c-text-2);
-        letter-spacing: .2px;
-    }
-    .launcher-card-arrow{
-        color: var(--c-text-3);
-        flex-shrink: 0;
-        transition: transform .25s var(--ease), color .25s var(--ease);
-    }
+    .launcher-card-name{font-size:.95rem;font-weight:700;color:var(--c-text);letter-spacing:.3px;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .launcher-card-name .ver{font-size:.68rem;font-weight:500;color:var(--c-text-3);background:var(--c-surface-alt);padding:1px 6px;border-radius:4px;letter-spacing:0}
+    .launcher-card-platforms{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+    .launcher-platform{font-size:.65rem;font-weight:600;padding:1px 6px;border-radius:3px;background:var(--c-surface-alt);color:var(--c-text-2);letter-spacing:.2px}
+    .launcher-card-arrow{color:var(--c-text-3);flex-shrink:0;transition:transform .25s var(--ease),color .25s var(--ease)}
     .launcher-card-arrow svg{width:18px;height:18px}
-    /* 每个启动器的主色 */
-    .launcher-card[data-launcher="hmcl"]{ --launcher-color: #f5a623; --launcher-shadow: rgba(245,166,35,.5); }
-    .launcher-card[data-launcher="pcl"]{  --launcher-color: #e74c3c; --launcher-shadow: rgba(231,76,60,.5); }
-    .launcher-card[data-launcher="fcl"]{  --launcher-color: #2ecc71; --launcher-shadow: rgba(46,204,113,.5); }
+    .launcher-card[data-launcher="hmcl"]{ --launcher-color:#f5a623; --launcher-shadow:rgba(245,166,35,.5); }
+    .launcher-card[data-launcher="pcl"]{ --launcher-color:#e74c3c; --launcher-shadow:rgba(231,76,60,.5); }
+    .launcher-card[data-launcher="fcl"]{ --launcher-color:#2ecc71; --launcher-shadow:rgba(46,204,113,.5); }
     .cta-section{text-align:center;padding:64px 0}
     .cta-section h2{font-size:1.7rem;font-weight:600;margin-bottom:8px}
     .cta-section p{color:var(--c-text-2);margin-bottom:24px;font-size:.95rem}
@@ -503,7 +370,7 @@
             <h1 class="hero-title fade-up stagger-2">66QN</h1>
             <p class="hero-sub fade-up stagger-3">一个纯净的生存世界，等你探索。</p>
             <div class="hero-ip fade-up stagger-4" id="heroIp">
-                <code id="heroIpText">play.starcraft-mc.cn</code>
+                <code id="heroIpText">xm.rainplay.cn</code>
                 <button class="btn-copy" onclick="copyIp()" data-primary-action>
                     <span class="icon" style="width:14px;height:14px"><svg><use href="#i-copy"/></svg></span>
                     复制
@@ -518,17 +385,17 @@
             <div class="info-card fade-up stagger-1">
                 <div class="info-label">游戏版本</div>
                 <div class="info-value" id="infoVersion"><span class="skeleton"></span></div>
-                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-sparkle"/></svg></span> 自动检测</div>
+                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-sparkle"/></svg></span> 实时检测</div>
             </div>
             <div class="info-card fade-up stagger-2">
                 <div class="info-label">在线人数</div>
                 <div class="info-value" id="infoPlayers"><span class="skeleton"></span></div>
-                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-users"/></svg></span> 管理员更新</div>
+                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-users"/></svg></span> 每 3 秒刷新</div>
             </div>
             <div class="info-card fade-up stagger-3">
                 <div class="info-label">服务器地址</div>
-                <div class="info-value mono" id="infoAddr">play.starcraft-mc.cn</div>
-                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-globe"/></svg></span> 端口 25565</div>
+                <div class="info-value mono" id="infoAddr">xm.rainplay.cn</div>
+                <div class="info-note"><span class="icon" style="width:12px;height:12px;color:var(--c-text-3)"><svg><use href="#i-globe"/></svg></span> 端口 <span id="infoPort">43205</span></div>
             </div>
         </div>
     </section>
@@ -554,7 +421,6 @@
         </div>
     </section>
 
-    <!-- ============ 社区入口 ============ -->
     <section class="section container">
         <h2 class="section-title fade-up">社区入口</h2>
         <div class="links-grid">
@@ -597,7 +463,6 @@
         </div>
     </section>
 
-    <!-- ============ 启动器下载（视觉强化区块） ============ -->
     <section class="section container">
         <div class="launcher-block fade-up">
             <div class="launcher-head">
@@ -801,16 +666,16 @@
 
 <script>
 /* ========================================
- * SECTION: js-config
+ * 配置
  * ======================================== */
 var API_BASE = 'https://api.66qnmc.dpdns.org';
 
+// ⚠️ 服务器地址和端口写死
+var SERVER_HOST = 'xm.rainplay.cn';
+var SERVER_PORT = 43205;
+
 var CFG = {
     serverName: '66QN',
-    defaultIp: 'play.starcraft-mc.cn',
-    defaultPort: 25565,
-    defaultVersion: '1.21.4',
-    maxImageSize: 10 * 1024,
     storageKeys: {
         user: 'sc_user',
         token: 'sc_token'
@@ -818,7 +683,7 @@ var CFG = {
 };
 
 /* ========================================
- * SECTION: js-api
+ * API 封装
  * ======================================== */
 function getToken() { return localStorage.getItem(CFG.storageKeys.token) || ''; }
 function setToken(t) { if (t) localStorage.setItem(CFG.storageKeys.token, t); else localStorage.removeItem(CFG.storageKeys.token); }
@@ -843,7 +708,7 @@ async function api(path, options) {
 }
 
 /* ========================================
- * SECTION: js-state
+ * 状态
  * ======================================== */
 var state = {
     currentPage: 'home',
@@ -855,7 +720,7 @@ var state = {
 };
 
 /* ========================================
- * SECTION: js-utils
+ * 工具函数
  * ======================================== */
 function $(sel) { return document.querySelector(sel); }
 function $$(sel) { return document.querySelectorAll(sel); }
@@ -876,9 +741,7 @@ function toast(msg, type) {
 }
 
 function copyIp() {
-    var ip = state.server ? state.server.ip : CFG.defaultIp;
-    var port = state.server ? state.server.port : CFG.defaultPort;
-    var text = ip + (port !== 25565 ? ':' + port : '');
+    var text = SERVER_HOST + (SERVER_PORT !== 25565 ? ':' + SERVER_PORT : '');
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(function() { toast('地址已复制', 'success'); });
     } else {
@@ -916,7 +779,7 @@ function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(
 function load(k, def) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
 
 /* ========================================
- * SECTION: js-router
+ * 路由
  * ======================================== */
 var pageIds = ['home','gallery','forum','register','login'];
 var isTransitioning = false;
@@ -937,6 +800,9 @@ function navigate(page) {
         a.classList.toggle('active', a.getAttribute('data-page') === page);
     });
     window.location.hash = page === 'home' ? '' : page;
+
+    // 离开首页时暂停轮询
+    if (page !== 'home') stopServerPolling();
 
     if (oldPage) {
         oldPage.classList.remove('visible');
@@ -966,7 +832,7 @@ function navigate(page) {
 
     if (page === 'gallery') { loadGallery().then(renderGallery); }
     if (page === 'forum') { loadForum().then(renderForum); }
-    if (page === 'home') detectServer();
+    if (page === 'home') { startServerPolling(); }
     $('#navLinks').classList.remove('open');
     $('#navHamburger').classList.remove('open');
 }
@@ -990,7 +856,7 @@ function triggerEntrance(container) {
 }
 
 /* ========================================
- * SECTION: js-auth
+ * 认证
  * ======================================== */
 async function submitReg(e) {
     e.preventDefault();
@@ -1081,34 +947,71 @@ function updateNavAuth() {
 }
 
 /* ========================================
- * SECTION: js-server
+ * 服务器状态（实时轮询）
  * ======================================== */
+var serverPollTimer = null;
+
 async function loadServerStatus() {
     try {
-        state.server = await api('/api/server/status');
+        var data = await api('/api/server/status');
+        state.server = data;
     } catch (err) {
         console.warn('服务器状态加载失败:', err);
-        state.server = {
-            ip: CFG.defaultIp, port: CFG.defaultPort, version: CFG.defaultVersion,
-            onlineNow: 0, maxPlayers: 100
-        };
+        if (!state.server) {
+            state.server = {
+                ip: SERVER_HOST, port: SERVER_PORT,
+                version: '1.21.4', onlineNow: 0, maxPlayers: 100, online: false
+            };
+        }
     }
 }
 
 function detectServer() {
-    var info = state.server || { ip: CFG.defaultIp, version: CFG.defaultVersion, onlineNow: 0, maxPlayers: 100 };
-    $('#infoVersion').innerHTML = '<span class="skeleton"></span>';
-    $('#infoPlayers').innerHTML = '<span class="skeleton"></span>';
-    setTimeout(function() {
-        $('#infoVersion').textContent = info.version;
-        $('#infoPlayers').textContent = info.onlineNow + ' / ' + info.maxPlayers;
-        $('#infoAddr').textContent = info.ip;
-        $('#heroIpText').textContent = info.ip;
-    }, 300);
+    var info = state.server || {};
+    var version = info.version || '1.21.4';
+    var online = info.onlineNow != null ? info.onlineNow : 0;
+    var max = info.maxPlayers || 100;
+    var isOnline = info.online !== false;
+
+    $('#infoVersion').textContent = version;
+    $('#infoPlayers').textContent = online + ' / ' + max;
+    $('#infoAddr').textContent = SERVER_HOST;
+    $('#heroIpText').textContent = SERVER_HOST;
+    $('#infoPort').textContent = SERVER_PORT;
+
+    // 在线状态圆点
+    var badgeDot = document.querySelector('.hero-badge-dot');
+    if (badgeDot) {
+        badgeDot.style.background = isOnline ? 'var(--c-success)' : 'var(--c-error)';
+    }
 }
 
+function startServerPolling() {
+    stopServerPolling();
+    loadServerStatus().then(detectServer);
+    serverPollTimer = setInterval(function() {
+        loadServerStatus().then(detectServer);
+    }, 3000);
+}
+
+function stopServerPolling() {
+    if (serverPollTimer) {
+        clearInterval(serverPollTimer);
+        serverPollTimer = null;
+    }
+}
+
+// 页面切到后台时暂停轮询
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        stopServerPolling();
+    } else if (state.currentPage === 'home') {
+        startServerPolling();
+    }
+});
+
 /* ========================================
- * SECTION: js-gallery
+ * 图片
  * ======================================== */
 async function loadGallery() {
     try {
@@ -1164,9 +1067,6 @@ function filterGallery(f) {
     renderGallery();
 }
 
-/* ========================================
- * SECTION: js-gallery-upload
- * ======================================== */
 function compressImage(file, maxSizeKB, cb) {
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -1197,7 +1097,7 @@ function compressImage(file, maxSizeKB, cb) {
 }
 
 /* ========================================
- * SECTION: js-forum
+ * 论坛
  * ======================================== */
 async function loadForum() {
     try {
@@ -1279,7 +1179,7 @@ async function likePost(id) {
 }
 
 /* ========================================
- * SECTION: js-ai-ball
+ * AI 悬浮球
  * ======================================== */
 (function() {
     var ball, chat, chatBody, chatInput, chatSend, chatClose;
@@ -1291,14 +1191,15 @@ async function likePost(id) {
     var kb = {
         '版本': '66QN目前运行 Minecraft Java 1.21.4，我们会跟进 Mojang 的正式版更新。',
         '加入': '你可以在「加入」页面提交申请，填写用户名、邮箱和申请理由，管理员审核通过后即可入站。',
-        'ip': '服务器地址是 play.starcraft-mc.cn，端口 25565。在 Minecraft 多人游戏中直接添加即可。',
-        '地址': '服务器地址是 play.starcraft-mc.cn，端口 25565。',
+        'ip': '服务器地址是 xm.rainplay.cn，端口 43205。',
+        '地址': '服务器地址是 xm.rainplay.cn，端口 43205。',
+        '端口': '服务器端口是 43205。',
         '规则': '66QN的核心规则：不破坏他人建筑、不偷窃物品、不使用外挂或作弊端、保持友善交流。',
         '插件': '66QN主打纯净生存，仅有基础的领地保护、基础 teleport 和 home 功能，不添加影响平衡的插件。',
         '活动': '我们每月会举办建筑比赛和 PvP 锦标赛，获胜者可以获得专属称号和奖励。',
         '建筑': '你可以在服务器中自由建造，使用 /claim 指令圈地保护你的建筑区域。',
         '红石': '红石机械是允许的，但请注意不要使用高频红石或大规模刷物机，以免影响服务器性能。',
-        '人数': '目前服务器在线人数和最大容量可以在首页查看，由管理员实时更新。',
+        '人数': '服务器在线人数和最大容量可以在首页实时查看，每 3 秒自动刷新一次。',
         'hello': '你好！我是66QN的 AI 助手，可以回答关于服务器的各种问题。',
         '你好': '你好！我是66QN的 AI 助手，可以回答关于服务器的各种问题。',
         '启动器': '我们推荐 HMCL（跨平台）、PCL2（Windows）和 FCL（安卓）。首页有下载链接。',
@@ -1431,13 +1332,13 @@ async function likePost(id) {
 })();
 
 /* ========================================
- * SECTION: js-init
+ * 初始化
  * ======================================== */
 async function init() {
     state.user = load(CFG.storageKeys.user, null);
     updateNavAuth();
 
-    await Promise.all([loadServerStatus(), loadGallery(), loadForum()]);
+    await Promise.all([loadGallery(), loadForum()]);
 
     var hash = window.location.hash.replace('#','');
     var startPage = (hash && pageIds.indexOf(hash) !== -1) ? hash : 'home';
@@ -1460,7 +1361,7 @@ async function init() {
 
     if (startPage === 'gallery') renderGallery();
     if (startPage === 'forum') renderForum();
-    if (startPage === 'home') detectServer();
+    if (startPage === 'home') startServerPolling();
 
     var fi = document.getElementById('galFileInput');
     if (fi) {
@@ -1470,7 +1371,7 @@ async function init() {
             if (!state.user) { toast('请先登录', 'error'); navigate('login'); fi.value = ''; return; }
 
             toast('正在压缩上传...', 'info');
-            compressImage(file, CFG.maxImageSize, async function(blob) {
+            compressImage(file, 10 * 1024, async function(blob) {
                 if (!blob) { toast('图片处理失败', 'error'); return; }
                 var fd = new FormData();
                 fd.append('image', blob, file.name);
