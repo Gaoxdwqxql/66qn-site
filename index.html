@@ -80,6 +80,8 @@
     .nav-hamburger.open span:nth-child(2){opacity:0}
     .nav-hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
     .hidden{display:none !important}
+    .btn-admin{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--r-s);font-size:.85rem;color:var(--c-accent);background:var(--c-accent-light);font-weight:600;transition:color .2s,background .2s}
+    .btn-admin:hover{color:#fff;background:var(--c-accent)}
     .hero{position:relative;overflow:hidden;padding:80px 0 64px}
     .hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#eef2ff 0%,#fafafa 40%,#f3f0ff 100%);z-index:0}
     .hero-bg::after{content:'';position:absolute;top:-50%;right:-30%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,113,227,.06) 0%,transparent 70%);animation:hero-glow 8s ease-in-out infinite alternate}
@@ -293,8 +295,11 @@
         .nav-links{display:none;position:fixed;top:52px;left:0;right:0;background:var(--c-surface);flex-direction:column;padding:16px 24px;gap:4px;border-bottom:1px solid var(--c-border-l);box-shadow:var(--sh-m);z-index:99}
         .nav-links.open{display:flex}
         .nav-links a{padding:10px 14px}
-        .nav-actions{display:none}
-        .nav-hamburger{display:flex}
+        .nav-actions{margin-left:auto;gap:2px}
+        .nav-hamburger{display:flex;margin-left:4px}
+        .btn-text{padding:6px 8px;font-size:.8rem}
+        .btn-admin{padding:5px 8px;font-size:.78rem}
+        .btn-admin .admin-text{display:none}
         .gal-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
         .gal-img{height:140px}
         .section{padding:32px 0}
@@ -347,10 +352,14 @@
         <div class="nav-links" id="navLinks">
             <a href="#" data-page="home" onclick="navigate('home');return false">首页</a>
             <a href="#" data-page="gallery" onclick="navigate('gallery');return false">实录</a>
-            <a href="#" data-page="forum" onclick="navigate('forum');return false">社区</a>
+            <a href="#" data-page="forum" onclick="navigate('forum');return false">论坛</a>
             <a href="#" data-page="register" onclick="navigate('register');return false">加入</a>
         </div>
         <div class="nav-actions">
+            <button class="btn-admin" id="btnAdmin" onclick="goAdmin()" title="管理后台">
+                <span class="icon" style="width:14px;height:14px"><svg><use href="#i-shield"/></svg></span>
+                <span class="admin-text">管理后台</span>
+            </button>
             <button class="btn-text" id="btnLogin" onclick="navigate('login')">登录</button>
             <button class="btn-text hidden" id="btnLogout" onclick="doLogout()">退出</button>
         </div>
@@ -366,7 +375,7 @@
     <div class="hero">
         <div class="hero-bg"></div>
         <div class="hero-inner">
-            <div class="hero-badge fade-up stagger-1"><span class="hero-badge-dot"></span>Minecraft Java 服务器</div>
+            <div class="hero-badge fade-up stagger-1"><span class="hero-badge-dot"></span><span id="heroBadgeText">Minecraft Java 服务器</span></div>
             <h1 class="hero-title fade-up stagger-2">66QN</h1>
             <p class="hero-sub fade-up stagger-3">一个纯净的生存世界，等你探索。</p>
             <div class="hero-ip fade-up stagger-4" id="heroIp">
@@ -570,7 +579,7 @@
 
 <div class="page" id="page-forum">
     <div class="page-head">
-        <h1 class="fade-up">社区</h1>
+        <h1 class="fade-up">论坛</h1>
         <p class="fade-up stagger-1">分享你的想法与经历</p>
     </div>
     <div class="container">
@@ -720,7 +729,7 @@ var state = {
 };
 
 /* ========================================
- * 工具函数
+ * 工具
  * ======================================== */
 function $(sel) { return document.querySelector(sel); }
 function $$(sel) { return document.querySelectorAll(sel); }
@@ -801,7 +810,6 @@ function navigate(page) {
     });
     window.location.hash = page === 'home' ? '' : page;
 
-    // 离开首页时暂停轮询
     if (page !== 'home') stopServerPolling();
 
     if (oldPage) {
@@ -853,6 +861,25 @@ function triggerEntrance(container) {
     } else {
         els.forEach(function(el) { el.classList.add('in'); });
     }
+}
+
+/* ========================================
+ * 管理后台入口
+ * ======================================== */
+function goAdmin() {
+    if (!state.user) {
+        // 未登录，跳登录页
+        toast('请先登录管理员账号', 'warning');
+        navigate('login');
+        return;
+    }
+    if (state.user.role !== 'admin') {
+        // 已登录但不是管理员
+        toast('当前账号没有管理员权限', 'error');
+        return;
+    }
+    // 是管理员，打开后台
+    window.open('/admin.html', '_blank');
 }
 
 /* ========================================
@@ -920,7 +947,7 @@ async function submitLogin(e) {
         setTimeout(function() {
             navigate('home');
             if (data.user.role === 'admin') {
-                setTimeout(function() { toast('管理员账号，可访问 admin.html 进入后台', 'info'); }, 800);
+                setTimeout(function() { toast('管理员账号，可点击「管理后台」进入', 'info'); }, 800);
             }
         }, 500);
     } catch (err) {
@@ -944,6 +971,17 @@ function updateNavAuth() {
     var u = state.user;
     $('#btnLogin').classList.toggle('hidden', !!u);
     $('#btnLogout').classList.toggle('hidden', !u);
+    // 管理后台按钮始终显示，通过 title 提示当前状态
+    var adminBtn = $('#btnAdmin');
+    if (adminBtn) {
+        if (!u) {
+            adminBtn.title = '管理后台（需要管理员登录）';
+        } else if (u.role !== 'admin') {
+            adminBtn.title = '管理后台（当前账号无权限）';
+        } else {
+            adminBtn.title = '管理后台';
+        }
+    }
 }
 
 /* ========================================
@@ -979,10 +1017,13 @@ function detectServer() {
     $('#heroIpText').textContent = SERVER_HOST;
     $('#infoPort').textContent = SERVER_PORT;
 
-    // 在线状态圆点
     var badgeDot = document.querySelector('.hero-badge-dot');
     if (badgeDot) {
         badgeDot.style.background = isOnline ? 'var(--c-success)' : 'var(--c-error)';
+    }
+    var badgeText = document.getElementById('heroBadgeText');
+    if (badgeText) {
+        badgeText.textContent = isOnline ? 'Minecraft Java 服务器' : 'Minecraft Java 服务器（离线）';
     }
 }
 
@@ -1001,7 +1042,6 @@ function stopServerPolling() {
     }
 }
 
-// 页面切到后台时暂停轮询
 document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
         stopServerPolling();
@@ -1189,7 +1229,7 @@ async function likePost(id) {
     var chatHistory = [];
 
     var kb = {
-        '版本': '66QN目前运行 Minecraft Java 1.21.4，我们会跟进 Mojang 的正式版更新。',
+        '版本': '66QN目前运行 Minecraft Java 26.2，我们会跟进 Mojang 的正式版更新。',
         '加入': '你可以在「加入」页面提交申请，填写用户名、邮箱和申请理由，管理员审核通过后即可入站。',
         'ip': '服务器地址是 xm.rainplay.cn，端口 43205。',
         '地址': '服务器地址是 xm.rainplay.cn，端口 43205。',
